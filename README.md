@@ -57,6 +57,8 @@ npx @chakra-ui/codemod <transform> <path>
 - [ ] [CSS Reset](https://chakra-ui.com/docs/migration#css-reset)
 - [ ] [Hooks](https://chakra-ui.com/docs/migration#hooks)
 
+Note: Some components can be grouped together eg. Progress and Switch share a common migration step, so we can group under "rename-color-to-colorscheme".
+
 ## References
 
 - https://skovy.dev/jscodeshift-custom-transform/
