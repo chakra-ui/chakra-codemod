@@ -1,10 +1,11 @@
-import { Transformer } from "../utils";
+import { Transform } from "jscodeshift";
+import { prepare } from "../utils";
 
 /**
  * Convert imports from `@chakra-ui/core` to `@chakra-ui/react`
  */
-const transformer: Transformer = (config) => {
-  const { j, root, done } = config;
+const transformer: Transform = (file, api) => {
+  const { j, root, done } = prepare(file, api);
 
   const imports = root.find(j.ImportDeclaration, {
     source: {

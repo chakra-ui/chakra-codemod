@@ -11,11 +11,12 @@
     "globby": "11.0.1",
     "inquirer": "7.3.3",
     "is-git-clean": "1.1.0",
-    "jscodeshift": "^0.6.4",
+    "jscodeshift": "^0.11.0",
     "meow": "7.0.1"
   },
   "devDependencies": {
     "jest": "^26.6.3",
+    "ts-jest": "^26.4.4",
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.7",
     "@types/jscodeshift": "^0.7.1",
@@ -27,7 +28,7 @@
   ],
   "scripts": {
     "transform": "jscodeshift --parser=tsx -t bin/cli.js  src/* --print --dry",
-    "build": "yarn tsc -d -w -p tsconfig.json",
+    "check:types": "tsc --noEmit",
     "test": "jest"
   },
   "bin": "./bin/next-codemod.js"

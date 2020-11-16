@@ -3,10 +3,16 @@ jest.autoMockOff();
 
 import { defineTest } from "jscodeshift/dist/testUtils";
 
-const fixtures = ["example-1"];
+/**
+ * List of all test fixtures with an input and
+ * output pair for each.
+ */
+const fixtures = ["basic"] as const;
 
-fixtures.forEach((test) =>
-  defineTest(__dirname, "core-to-react", null, `core-to-react/${test}`, {
-    parser: "tsx",
-  })
-);
+describe("core-to-react", () => {
+  fixtures.forEach((test) =>
+    defineTest(__dirname, "core-to-react", null, `core-to-react/${test}`, {
+      parser: "tsx",
+    })
+  );
+});
