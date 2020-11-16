@@ -3,6 +3,7 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "target": "es6",
+    "strict": false,
     "jsx": "preserve"
   }
 }
