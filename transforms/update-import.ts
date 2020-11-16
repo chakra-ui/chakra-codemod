@@ -1,4 +1,5 @@
-import { Transformer } from "../utils";
+import { Transform } from "jscodeshift";
+import { prepare } from "../utils";
 
 const REPLACEMENTS = {
   PseudoBox: "Box",
@@ -7,8 +8,8 @@ const REPLACEMENTS = {
   AspectRatioBox: "AspectRatio",
 };
 
-const updateImports: Transformer = (config) => {
-  const { j, root, done } = config;
+const updateImports: Transform = (file, api) => {
+  const { j, root, done } = prepare(file, api);
 
   const imports = root.find(
     j.Identifier,
