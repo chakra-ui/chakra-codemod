@@ -68,9 +68,14 @@ export async function bootstrap() {
   if (!isWorkingDirClean) {
     console.log(
       chalk.yellow`There are uncommited changes in your working directory.
-Please commit or stash them before running the codemode.`,
+Please commit or stash them before running the codemod.`,
     );
-    process.exit(1);
+
+    if (!process.env.CHAKRA_CODEMOD_FORCE_GIT) {
+      process.exit(1);
+    }
+
+    console.log(chalk.blue`CHAKRA_CODEMOD_FORCE_GIT is set - continuing...`);
   }
 
   // TODO get real codemod names
