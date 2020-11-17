@@ -4,6 +4,9 @@
     "esModuleInterop": true,
     "target": "es6",
     "strict": false,
-    "jsx": "preserve"
-  }
+    "jsx": "preserve",
+    "lib": ["es2017"], // node >=8
+    "outDir": "dist"
+  },
+  "exclude": ["**/__testfixtures__", "**/__tests__"]
 }
