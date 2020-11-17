@@ -1,4 +1,12 @@
-import { API, Collection, FileInfo, JSCodeshift } from "jscodeshift";
+import {
+  API,
+  ASTPath,
+  Collection,
+  FileInfo,
+  JSCodeshift,
+  JSXIdentifier,
+  VariableDeclarator,
+} from "jscodeshift";
 
 export interface TransformerConfig {
   j: JSCodeshift;
@@ -21,4 +29,32 @@ export function prepare(file: FileInfo, api: API) {
   const done = () => root.toSource();
 
   return { root, j, done };
+}
+
+const baseSelector =
+  "Box|PseudoBox|Icon|Accordion|Alert|AlertDialog|AspectRatioBox|Avatar|Badge|Breadcrumb|Button|Checkbox|CircularProgress|CloseButton|Code|Collapse|ControlBox|Divider";
+
+export function findJSXElementsByModuleName(
+  api: TransformerConfig,
+  moduleName: string,
+  selectorStr = baseSelector,
+) {
+  const regex = new RegExp(`^(${selectorStr})$`);
+
+  const { root, j } = api;
+  const localNames = new Set();
+
+  root
+    .find(j.ImportDeclaration, {
+      source: { value: moduleName },
+    })
+    .find(j.ImportSpecifier, (node) => regex.test(node.imported.name))
+    .forEach((path) => {
+      localNames.add(path.value.local.name);
+    });
+
+  return root.findJSXElements().filter((node) => {
+    const identifier = node.value.openingElement.name as JSXIdentifier;
+    return localNames.has(identifier.name);
+  });
 }

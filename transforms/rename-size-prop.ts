@@ -1,32 +1,23 @@
-import { JSXElement, Transform } from "jscodeshift";
-import { prepare } from "../utils";
-
-function isValidElementType(node) {
-  const type = node.openingElement.name.name;
-  return ["PseudoBox", "Box"].includes(type);
-}
-
-function hasSizeJSXAttribute(node: JSXElement) {
-  const { attributes } = node.openingElement;
-  return !!attributes.find(
-    (attr) => attr.type === "JSXAttribute" && attr.name.name === "size",
-  );
-}
-
-function selector(node: JSXElement) {
-  return isValidElementType(node) && hasSizeJSXAttribute(node);
-}
+import { Transform } from "jscodeshift";
+import { findJSXElementsByModuleName, prepare } from "../utils";
 
 function insertAtIndex(arr1, arr2, idx) {
   return arr1.slice(0, idx).concat(arr2).concat(arr1.slice(idx));
 }
 
 const transformer: Transform = (file, api) => {
-  const { j, root, done } = prepare(file, api);
+  const config = prepare(file, api);
+  const { j, done } = config;
 
-  const elements = root.find(j.JSXElement, selector);
+  const els = findJSXElementsByModuleName(
+    config,
+    "@chakra-ui/core",
+    "Box|PseudoBox",
+  ).filter(
+    j.filters.JSXElement.hasAttributes({ size: (value) => value != null }),
+  );
 
-  elements.forEach((path) => {
+  els.forEach((path) => {
     let props = path.value.openingElement.attributes;
     let newProps: typeof props = [];
 

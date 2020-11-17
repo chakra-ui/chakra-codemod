@@ -8,11 +8,12 @@ import { defineTest } from "jscodeshift/dist/testUtils";
  * output pair for each.
  */
 const fixtures = ["basic"] as const;
+const name = "core-to-react";
 
-describe("core-to-react", () => {
+describe(name, () => {
   fixtures.forEach((test) =>
-    defineTest(__dirname, "core-to-react", null, `core-to-react/${test}`, {
+    defineTest(__dirname, name, null, `${name}/${test}`, {
       parser: "tsx",
-    })
+    }),
   );
 });

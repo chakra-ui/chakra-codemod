@@ -7,18 +7,13 @@ import { defineTest } from "jscodeshift/dist/testUtils";
  * List of all test fixtures with an input and
  * output pair for each.
  */
-const fixtures = ["basic"] as const;
+const fixtures = ["basic", "renamed"] as const;
+const name = "rename-size-prop";
 
-describe("rename-size-prop", () => {
+describe(name, () => {
   fixtures.forEach((test) =>
-    defineTest(
-      __dirname,
-      "rename-size-prop",
-      null,
-      `rename-size-prop/${test}`,
-      {
-        parser: "tsx",
-      },
-    ),
+    defineTest(__dirname, name, null, `${name}/${test}`, {
+      parser: "tsx",
+    }),
   );
 });
