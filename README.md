@@ -59,6 +59,36 @@ npx @chakra-ui/codemod <transform> <path>
 
 Note: Some components can be grouped together eg. Progress and Switch share a common migration step, so we can group under "rename-color-to-colorscheme".
 
+## Development
+
+To watch and build TS files run:
+
+```bash
+yarn watch   
+```
+
+Link this package in your global `node_modules` by running:
+
+```bash
+yarn link
+```
+
+To execute the command run:
+
+```bash
+# no path
+chakra-codemod
+> Run chakra codemod in: <current-directory>
+
+# relative path
+chakra-codemod my-app
+> Run chakra codemod in: <current-directory>/my-app
+
+# absolute path
+chakra-codemod /Users/you/development/my-app
+> Run chakra codemod in: /Users/you/development/my-app
+```
+
 ## References
 
 - https://skovy.dev/jscodeshift-custom-transform/
