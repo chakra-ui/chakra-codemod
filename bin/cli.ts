@@ -48,6 +48,7 @@ async function askQuestions(options: { codemods: string[] }) {
   const answers: {
     codemods: string[];
     dry: boolean;
+    print: boolean;
   } = await inquirer.prompt([
     {
       type: "checkbox",
@@ -60,6 +61,12 @@ async function askQuestions(options: { codemods: string[] }) {
       type: "confirm",
       name: "dry",
       message: "Do you want to perform a dry run?",
+      default: true,
+    },
+    {
+      type: "confirm",
+      name: "print",
+      message: "Print all modified files?",
       default: true,
     },
   ]);
