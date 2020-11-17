@@ -70,6 +70,7 @@ export async function bootstrap() {
       chalk.yellow`There are uncommited changes in your working directory.
 Please commit or stash them before running the codemode.`,
     );
+    process.exit(1);
   }
 
   // TODO get real codemod names
