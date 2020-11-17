@@ -70,7 +70,7 @@ yarn watch
 Link this package in your global `node_modules` by running:
 
 ```bash
-yarn link
+npm link
 ```
 
 To execute the command run:
