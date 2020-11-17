@@ -7,17 +7,21 @@ Codemods are transformations that run on your codebase programmatically. This al
 ## Usage
 
 ```sh
-npx @chakra-ui/codemod <transform> <path>
+npx @chakra-ui/codemod [path]
 ```
 
-- `transform` - name of transform, see available transforms below.
-- `path` - files or directory to transform
-- `--dry` Do a dry-run, no code will be edited
-- `--print` Prints the changed output for comparison
+The codemod will ask you a few questions:
+
+- Which code mods do you want to run? [select]
+- Do you want to perform a dry run? [Yn]
+- Print all modified files? [Yn]
+
+If you are running this command in a git repository, please commit or stash your changes first
 
 ## Chakra V1 Codemods
 
 ### Upgrade steps
+
 - [ ] [1. Update your dependencies](https://chakra-ui.com/docs/migration#1-update-your-dependencies)
 - [ ] [2. Update the ThemeProvider](https://chakra-ui.com/docs/migration#2-update-the-themeprovider)
 - [ ] [3. Rename variantColor to colorScheme](https://chakra-ui.com/docs/migration#3-rename-variantcolor-to-colorscheme)
@@ -27,6 +31,7 @@ npx @chakra-ui/codemod <transform> <path>
 - [ ] [7. ColorModeScript (optional)](https://chakra-ui.com/docs/migration#7-colormodescript-optional)
 
 ### Components
+
 - [ ] [Accordion](https://chakra-ui.com/docs/migration#accordion)
 - [ ] [AspectRatioBox](https://chakra-ui.com/docs/migration#aspectratiobox)
 - [ ] [Breadcrumb](https://chakra-ui.com/docs/migration#breadcrumb)
@@ -64,7 +69,7 @@ Note: Some components can be grouped together eg. Progress and Switch share a co
 To watch and build TS files run:
 
 ```bash
-yarn watch   
+yarn watch
 ```
 
 Link this package in your global `node_modules` by running:
