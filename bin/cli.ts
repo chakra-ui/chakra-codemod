@@ -28,47 +28,12 @@ async function isWorkdirClean(workingDir: string) {
   }
 }
 
-async function askQuestions(options: { codemods: string[] }) {
-  const allText = "ALL";
-  const answers: {
-    mods: string[];
-    isDryRun: boolean;
-  } = await inquirer.prompt([
-    {
-      type: "checkbox",
-      name: "mods",
-      message: "Which code mods do you want to run?",
-      choices: [allText, ...options.codemods],
-      default: [allText],
-    },
-    {
-      type: "confirm",
-      name: "isDryRun",
-      message: "Do you want to perform a dry run?",
-      default: true,
-    },
-  ]);
-
-  if (answers.mods.includes(allText)) {
-    // if "ALL" are selected, return every available codemod
-    return {
-      ...answers,
-      mods: options.codemods.slice(),
-    };
-  }
-
-  return answers;
-}
-
-export async function bootstrap() {
-  const workingDir = getWorkingDir();
-  console.log(`${chalk.blue`Run chakra codemod in: `}${chalk(workingDir)}`);
-
+async function checkWorkDir(workingDir: string) {
   const isWorkingDirClean = await isWorkdirClean(workingDir);
   if (!isWorkingDirClean) {
     console.log(
-      chalk.yellow`There are uncommited changes in your working directory.
-Please commit or stash them before running the codemod.`,
+      chalk.yellow`There are uncommitted changes in your working directory.
+Please commit or stash them before running the code mod.`,
     );
 
     if (!process.env.CHAKRA_CODEMOD_FORCE_GIT) {
@@ -77,9 +42,39 @@ Please commit or stash them before running the codemod.`,
 
     console.log(chalk.blue`CHAKRA_CODEMOD_FORCE_GIT is set - continuing...`);
   }
+}
+
+async function askQuestions(options: { codemods: string[] }) {
+  const answers: {
+    codemods: string[];
+    dry: boolean;
+  } = await inquirer.prompt([
+    {
+      type: "checkbox",
+      name: "codemods",
+      message: "Which code mods do you want to run?",
+      choices: options.codemods,
+      default: options.codemods,
+    },
+    {
+      type: "confirm",
+      name: "dry",
+      message: "Do you want to perform a dry run?",
+      default: true,
+    },
+  ]);
+
+  return answers;
+}
+
+export async function bootstrap() {
+  const workingDir = getWorkingDir();
+  console.log(`${chalk.blue`Run chakra codemod in: `}${chalk(workingDir)}`);
+
+  await checkWorkDir(workingDir);
 
   // TODO get real codemod names
-  const codemods = ["these", "are", "the", "names", "of", "our", "codemods"];
+  const codemods = ["these", "are", "the", "names", "of", "our", "code mods"];
   const answers = await askQuestions({ codemods });
 
   // TODO run it 💨
