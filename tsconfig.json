@@ -6,7 +6,8 @@
     "strict": false,
     "jsx": "preserve",
     "lib": ["es2017"], // node >=8
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": "."
   },
   "exclude": ["**/__testfixtures__", "**/__tests__"]
 }

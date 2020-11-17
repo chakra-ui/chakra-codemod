@@ -1,5 +1,5 @@
 import { Transform } from "jscodeshift";
-import { prepare } from "../utils";
+import { prepare } from "utils/shared";
 
 const REPLACEMENTS = {
   PseudoBox: "Box",
@@ -13,7 +13,7 @@ const updateImports: Transform = (file, api) => {
 
   const imports = root.find(
     j.Identifier,
-    (node) => node.value.name in REPLACEMENTS
+    (node) => node.value.name in REPLACEMENTS,
   );
 
   imports.forEach((node) => {

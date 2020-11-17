@@ -1,5 +1,6 @@
 import { Transform } from "jscodeshift";
-import { findJSXElementsByModuleName, prepare } from "../utils";
+import { prepare } from "utils/shared";
+import { findJSXElementsByModuleName } from "utils/jsx";
 
 function insertAtIndex(arr1, arr2, idx) {
   return arr1.slice(0, idx).concat(arr2).concat(arr1.slice(idx));
