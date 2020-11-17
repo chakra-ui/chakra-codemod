@@ -34,14 +34,18 @@ export function prepare(file: FileInfo, api: API) {
 const baseSelector =
   "Box|PseudoBox|Icon|Accordion|Alert|AlertDialog|AspectRatioBox|Avatar|Badge|Breadcrumb|Button|Checkbox|CircularProgress|CloseButton|Code|Collapse|ControlBox|Divider";
 
-export function findJSXElementsByModuleName(
-  api: TransformerConfig,
-  moduleName: string,
-  selectorStr = baseSelector,
-) {
-  const regex = new RegExp(`^(${selectorStr})$`);
+interface FindJSXElementOptions {
+  config: TransformerConfig;
+  moduleName: string;
+  selector?: string;
+}
 
-  const { root, j } = api;
+export function findJSXElementsByModuleName(options: FindJSXElementOptions) {
+  const { config, moduleName, selector = baseSelector } = options;
+
+  const regex = new RegExp(`^(${selector})$`);
+  const { root, j } = config;
+
   const localNames = new Set();
 
   root

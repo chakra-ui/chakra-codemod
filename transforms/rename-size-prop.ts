@@ -7,13 +7,13 @@ function insertAtIndex(arr1, arr2, idx) {
 
 const transformer: Transform = (file, api) => {
   const config = prepare(file, api);
-  const { j, done } = config;
+  const { j, done, root } = config;
 
-  const els = findJSXElementsByModuleName(
+  const els = findJSXElementsByModuleName({
     config,
-    "@chakra-ui/core",
-    "Box|PseudoBox",
-  ).filter(
+    moduleName: "@chakra-ui/core",
+    selector: "Box|PseudoBox",
+  }).filter(
     j.filters.JSXElement.hasAttributes({ size: (value) => value != null }),
   );
 
@@ -27,16 +27,12 @@ const transformer: Transform = (file, api) => {
     props.forEach((prop, index) => {
       if (prop.type === "JSXSpreadAttribute") {
         newProps.push(prop);
-        return;
-      }
-
-      if (prop.name.name !== "size") {
+      } else if (prop.name.name !== "size") {
         newProps.push(prop);
-        return;
+      } else {
+        sizePropIndex = index;
+        sizePropValue = prop.value;
       }
-
-      sizePropIndex = index;
-      sizePropValue = prop.value;
     });
 
     const w = j.jsxAttribute(j.jsxIdentifier("w"), sizePropValue);
