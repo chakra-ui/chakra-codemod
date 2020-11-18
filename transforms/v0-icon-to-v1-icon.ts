@@ -16,7 +16,9 @@ const transformer: Transform = (file, api) => {
   const config = prepare(file, api);
   const { j, root, done } = config;
 
-  // find all Icon jsx and grab the name attr's value
+  /**
+   * Find all Icon jsx and grab the name attr's value
+   */
   root
     .findJSXElements("Icon")
     .filter(
