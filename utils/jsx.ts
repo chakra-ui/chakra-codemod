@@ -1,4 +1,9 @@
-import { ASTPath, JSXElement, JSXIdentifier } from "jscodeshift";
+import {
+  JSCodeshift,
+  JSXAttribute,
+  JSXElement,
+  JSXIdentifier,
+} from "jscodeshift";
 import { TransformerConfig } from "./shared";
 
 const baseSelector =
@@ -50,4 +55,14 @@ export function findJSXElementsByModuleName(options: FindJSXElementOptions) {
 export function renameJSXElement(node: JSXElement, name: string) {
   (node.openingElement.name as JSXIdentifier).name = name;
   (node.closingElement.name as JSXIdentifier).name = name;
+}
+
+export function createJSXElement(
+  j: JSCodeshift,
+  localName: string,
+  attrs: JSXAttribute[] = [],
+) {
+  const openingElement = j.jsxOpeningElement(j.jsxIdentifier(localName), attrs);
+  openingElement.selfClosing = true;
+  return j.jsxElement(openingElement);
 }

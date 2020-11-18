@@ -1,4 +1,9 @@
-import { Collection, ImportSpecifier, JSCodeshift } from "jscodeshift";
+import {
+  Collection,
+  ImportDeclaration,
+  ImportSpecifier,
+  JSCodeshift,
+} from "jscodeshift";
 
 interface HasSubmoduleOptions {
   moduleName: string;
@@ -96,9 +101,12 @@ export function addModuleImport(
 interface AddSubmoduleImportOptions {
   moduleName: string;
   importedName: string;
-  localName: string;
+  localName?: string;
 }
 
+/**
+ * Add module to a package if the package exists
+ */
 export function addSubmoduleImport(
   j: JSCodeshift,
   root: Collection,
@@ -122,7 +130,7 @@ export function addSubmoduleImport(
 }
 
 interface InsertImportAfterOptions {
-  importStatement: ImportSpecifier;
+  importStatement: ImportDeclaration;
   afterModule: string;
 }
 
@@ -133,28 +141,28 @@ export function insertImportAfter(
 ) {
   const { importStatement, afterModule } = options;
 
-  const firstAfterModuleImport = root
+  const firstImport = root
     .find(j.ImportDeclaration, {
       source: { value: afterModule },
     })
     .at(0);
 
-  if (firstAfterModuleImport.paths()[0]) {
-    firstAfterModuleImport.insertAfter(importStatement);
+  if (firstImport.paths()[0]) {
+    firstImport.insertAfter(importStatement);
   } else {
     root.get().node.program.body.unshift(importStatement);
   }
 }
 
-interface InsertImportAfterOptions {
-  importStatement: ImportSpecifier;
+interface InsertImportBeforeOptions {
+  importStatement: ImportDeclaration;
   beforeModule: string;
 }
 
 export function insertImportBefore(
   j: JSCodeshift,
   root: Collection,
-  options: InsertImportAfterOptions,
+  options: InsertImportBeforeOptions,
 ) {
   const { importStatement, beforeModule } = options;
   const firstBeforeModuleImport = root
