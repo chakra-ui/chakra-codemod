@@ -5,6 +5,9 @@ import chalk from "chalk";
 import path from "path";
 import isGitClean from "is-git-clean";
 import inquirer from "inquirer";
+import { promisify } from "util";
+
+const readDirAsync = promisify(fs.readdir);
 
 function getWorkingDir() {
   const workingDir = path.resolve(process.argv[2] || process.cwd());
@@ -44,6 +47,13 @@ Please commit or stash them before running the code mod.`,
   }
 }
 
+async function getCodeModNames() {
+  const files = await readDirAsync(path.join(__dirname, "..", "transforms"));
+  return files
+    .filter((file) => file.endsWith(".js"))
+    .map((file) => path.basename(file, ".js"));
+}
+
 async function askQuestions(options: { codemods: string[] }) {
   const answers: {
     codemods: string[];
@@ -80,8 +90,7 @@ export async function bootstrap() {
 
   await checkWorkDir(workingDir);
 
-  // TODO get real codemod names
-  const codemods = ["these", "are", "the", "names", "of", "our", "code mods"];
+  const codemods = await getCodeModNames();
   const answers = await askQuestions({ codemods });
 
   // TODO run it 💨
