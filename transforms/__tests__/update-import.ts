@@ -9,7 +9,7 @@ import { defineTest } from "jscodeshift/dist/testUtils";
  * output pair for each.
  */
 const fixtures = ["basic"] as const;
-const name = "use-disclosure-api";
+const name = "update-import";
 
 describe(name, () => {
   fixtures.forEach((test) =>
