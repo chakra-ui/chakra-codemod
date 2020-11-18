@@ -4,11 +4,7 @@ import {
   insertOrCreateSubmoduleImport,
   removeModuleImport,
 } from "utils/module";
-import { prepare } from "utils/shared";
-
-function capitalize(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+import { capitalize, prepare } from "utils/shared";
 
 const iconsPkgName = "@chakra-ui/icons";
 
