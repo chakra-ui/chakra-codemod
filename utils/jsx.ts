@@ -66,3 +66,7 @@ export function createJSXElement(
   openingElement.selfClosing = true;
   return j.jsxElement(openingElement);
 }
+
+export function getJSXElementName(node: JSXElement) {
+  return (node.openingElement.name as JSXIdentifier).name;
+}
