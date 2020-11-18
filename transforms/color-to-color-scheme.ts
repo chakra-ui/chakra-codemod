@@ -1,34 +1,27 @@
 import { Transform } from "jscodeshift";
+import { findJSXElementsByModuleName } from "utils/jsx";
 import { prepare } from "utils/shared";
 
-const renameColorProps: Transform = (file, api) => {
-  const { j, root, done } = prepare(file, api);
+const transfomer: Transform = (file, api) => {
+  const config = prepare(file, api);
+  const { j, done } = config;
 
-  root
-    .find(j.JSXIdentifier, isApplicableJsxIdentifier)
-    .closest(j.JSXElement)
-    .filter(hasColorPropAttribute)
+  findJSXElementsByModuleName({
+    config,
+    moduleName: "@chakra-ui/core",
+    selector: "Switch|Progress",
+  })
+    .filter(
+      j.filters.JSXElement.hasAttributes({
+        color: () => true,
+      }),
+    )
+    .find(j.JSXIdentifier, { name: "color" })
     .forEach((node) => {
-      const colorAttribute = node.value.openingElement.attributes.find(
-        (attribute) => attribute.name.name === "color",
-      );
-      colorAttribute.name.name = "colorScheme";
+      node.value.name = "colorScheme";
     });
 
   return done();
 };
 
-const identifiers = ["Switch", "Progress"];
-function isApplicableJsxIdentifier(node) {
-  return identifiers.includes(node.name);
-}
-
-function hasColorPropAttribute(node) {
-  return !!node.value.openingElement?.attributes?.some(
-    (attribute) => attribute.name.name === "color",
-  );
-}
-
-module.exports = {
-  renameColorProps,
-};
+export default transfomer;
