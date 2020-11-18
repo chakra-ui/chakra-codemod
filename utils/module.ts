@@ -219,3 +219,33 @@ export function removeModuleImport(
     })
     .remove();
 }
+
+export function insertOrCreateSubmoduleImport(
+  j: JSCodeshift,
+  root: Collection,
+  options: { moduleName: string; importedName: string },
+) {
+  const { moduleName, importedName } = options;
+
+  const exists =
+    root
+      .find(j.ImportDeclaration, {
+        source: { value: moduleName },
+      })
+      .paths().length >= 1;
+
+  if (exists) {
+    addSubmoduleImport(j, root, {
+      importedName,
+      moduleName,
+    });
+  } else {
+    insertImportAfter(j, root, {
+      afterModule: "@chakra-ui/core",
+      importStatement: j.importDeclaration(
+        [j.importSpecifier(j.identifier(importedName))],
+        j.literal(moduleName),
+      ),
+    });
+  }
+}

@@ -1,10 +1,8 @@
-import { JSXAttribute, Transform } from "jscodeshift";
+import { JSXAttribute, StringLiteral, Transform } from "jscodeshift";
 import { createJSXElement } from "utils/jsx";
 import {
+  insertOrCreateSubmoduleImport,
   removeModuleImport,
-  insertImportAfter,
-  hasSubmoduleImport,
-  addSubmoduleImport,
 } from "utils/module";
 import { prepare } from "utils/shared";
 
@@ -12,7 +10,9 @@ function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-const transform: Transform = (file, api) => {
+const iconsPkgName = "@chakra-ui/icons";
+
+const transformer: Transform = (file, api) => {
   const config = prepare(file, api);
   const { j, root, done } = config;
 
@@ -26,8 +26,8 @@ const transform: Transform = (file, api) => {
     )
     .replaceWith((node) => {
       const v0Props = node.value.openingElement.attributes as JSXAttribute[];
-      const v0IconName = v0Props.find((prop) => prop.name.name === "name").value
-        .value;
+      const { value } = v0Props.find((prop) => prop.name.name === "name");
+      const v0IconName = (value as StringLiteral).value;
 
       const v1Props = v0Props.filter((prop) => prop.name.name !== "name");
       const v1IconName = `${capitalize(v0IconName)}Icon`;
@@ -38,27 +38,10 @@ const transform: Transform = (file, api) => {
        */
       const v1Icon = createJSXElement(j, v1IconName, v1Props);
 
-      const iconsModuleExists =
-        root
-          .find(j.ImportDeclaration, {
-            source: { value: "@chakra-ui/icons" },
-          })
-          .paths().length >= 1;
-
-      if (iconsModuleExists) {
-        addSubmoduleImport(j, root, {
-          importedName: v1IconName,
-          moduleName: "@chakra-ui/icons",
-        });
-      } else {
-        insertImportAfter(j, root, {
-          afterModule: "@chakra-ui/core",
-          importStatement: j.importDeclaration(
-            [j.importSpecifier(j.identifier(v1IconName))],
-            j.literal("@chakra-ui/icons"),
-          ),
-        });
-      }
+      insertOrCreateSubmoduleImport(j, root, {
+        importedName: v1IconName,
+        moduleName: iconsPkgName,
+      });
 
       return v1Icon;
     });
@@ -68,9 +51,9 @@ const transform: Transform = (file, api) => {
     selector: "Icon",
   });
 
-  //   console.log("Replaced icon syntax, kindly install `@chakra-ui/icons`");
+  // console.log("Replaced icon syntax, kindly install `@chakra-ui/icons`");
 
   return done();
 };
 
-export default transform;
+export default transformer;

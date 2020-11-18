@@ -1,3 +1,5 @@
+/* global jest */
+
 jest.autoMockOff();
 
 import { defineTest } from "jscodeshift/dist/testUtils";
