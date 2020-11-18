@@ -2,6 +2,12 @@ import { Transform } from "jscodeshift";
 import { findJSXElementsByModuleName } from "utils/jsx";
 import { prepare } from "utils/shared";
 
+/**
+ * Converts the `color` prop applied to `Switch` or `Progress`
+ * to `colorScheme`
+ * 
+ * <Switch color="red" /> => <Switch colorScheme="red" />
+ */
 const transfomer: Transform = (file, api) => {
   const config = prepare(file, api);
   const { j, done } = config;

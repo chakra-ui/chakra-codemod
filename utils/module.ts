@@ -12,7 +12,7 @@ interface HasSubmoduleOptions {
  *
  * import { Box } from "@chakra-ui/core"
  *
- * const result hasSubmoduleImport(j, root, {
+ * const result = hasSubmoduleImport(j, root, {
  *   moduleName: "@chakra-ui/core",
  *   submoduleName: "Box"
  * })
@@ -97,7 +97,6 @@ interface AddSubmoduleImportOptions {
   moduleName: string;
   importedName: string;
   localName: string;
-  before;
 }
 
 export function addSubmoduleImport(
@@ -185,4 +184,30 @@ export function insertImportBefore(
     // insert `import` at body(0)
     root.get().node.program.body.unshift(importStatement);
   }
+}
+
+interface RemoveModuleImportOptions {
+  moduleName: string;
+  selector: string;
+}
+
+export function removeModuleImport(
+  j: JSCodeshift,
+  root: Collection,
+  options: RemoveModuleImportOptions,
+) {
+  const { moduleName, selector } = options;
+
+  root
+    .find(j.ImportDeclaration, {
+      source: {
+        value: moduleName,
+      },
+    })
+    .find(j.ImportSpecifier)
+    .filter((path) => {
+      const regex = new RegExp(`^(${selector})$`);
+      return regex.test(path.node.imported.name);
+    })
+    .remove();
 }

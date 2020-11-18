@@ -1,4 +1,4 @@
-import { JSXIdentifier } from "jscodeshift";
+import { JSXElement, JSXIdentifier } from "jscodeshift";
 import { TransformerConfig } from "./shared";
 
 const baseSelector =
@@ -31,4 +31,9 @@ export function findJSXElementsByModuleName(options: FindJSXElementOptions) {
     const identifier = node.value.openingElement.name as JSXIdentifier;
     return localNames.has(identifier.name);
   });
+}
+
+export function renameJSXElement(node: JSXElement, name: string) {
+  (node.openingElement.name as JSXIdentifier).name = name;
+  (node.closingElement.name as JSXIdentifier).name = name;
 }
