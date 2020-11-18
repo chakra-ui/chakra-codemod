@@ -1,4 +1,4 @@
-import { JSXElement, JSXIdentifier } from "jscodeshift";
+import { ASTPath, JSXElement, JSXIdentifier } from "jscodeshift";
 import { TransformerConfig } from "./shared";
 
 const baseSelector =
@@ -10,9 +10,8 @@ interface FindJSXElementOptions {
   selector?: string;
 }
 
-export function findJSXElementsByModuleName(options: FindJSXElementOptions) {
+export function findByModuleName(options: FindJSXElementOptions) {
   const { config, moduleName, selector = baseSelector } = options;
-
   const regex = new RegExp(`^(${selector})$`);
   const { root, j } = config;
 
@@ -27,9 +26,24 @@ export function findJSXElementsByModuleName(options: FindJSXElementOptions) {
       localNames.add(path.value.local.name);
     });
 
+  const check = (name: string) => {
+    return localNames.has(name);
+  };
+
+  return check;
+}
+
+export function findJSXElementsByModuleName(options: FindJSXElementOptions) {
+  options.selector ??= baseSelector;
+  const {
+    config: { root },
+  } = options;
+
+  const hasName = findByModuleName(options);
+
   return root.findJSXElements().filter((node) => {
     const identifier = node.value.openingElement.name as JSXIdentifier;
-    return localNames.has(identifier.name);
+    return hasName(identifier.name);
   });
 }
 
