@@ -11,13 +11,12 @@ const REPLACEMENTS = {
 const updateImports: Transform = (file, api) => {
   const { j, root, done } = prepare(file, api);
 
-  const imports = root.find(
-    j.Identifier,
-    (node) => node.value.name in REPLACEMENTS,
-  );
+  const imports = root.find(j.Identifier, (node) => {
+    return node.name in REPLACEMENTS;
+  });
 
   imports.forEach((node) => {
-    j(node).renameTo(REPLACEMENTS[node.value.name]);
+    node.value.name = REPLACEMENTS[node.value.name];
   });
 
   return done();
