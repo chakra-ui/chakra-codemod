@@ -1,7 +1,6 @@
 {
   "name": "@chakra-ui/codemod",
   "version": "1.0.0",
-  "main": "index.js",
   "repository": "https://github.com/chakra-ui/chakra-codemod.git",
   "author": "Segun Adebayo <joseshegs@gmail.com>",
   "license": "MIT",
@@ -27,8 +26,8 @@
     "typescript": "^4.0.5"
   },
   "files": [
-    "dist/transforms/*.js",
-    "dist/bin/*.js"
+    "dist/transforms",
+    "dist/bin"
   ],
   "scripts": {
     "transform": "jscodeshift --parser=tsx -t bin/cli.js  src/* --print --dry",
@@ -41,6 +40,7 @@
     "release": "changeset publish"
   },
   "bin": {
+    "@chakra-ui/codemod": "./dist/bin/cli.js",
     "chakra-codemod": "./dist/bin/cli.js"
   }
 }
