@@ -34,9 +34,11 @@
     "transform": "jscodeshift --parser=tsx -t bin/cli.js  src/* --print --dry",
     "check:types": "tsc --noEmit",
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc",
-    "watch": "npm run build -- -w",
-    "test": "jest"
+    "prebuild": "yarn clean",
+    "build": "yarn clean && tsc",
+    "watch": "yarn build -- -w",
+    "test": "jest",
+    "release": "changeset publish"
   },
   "bin": {
     "chakra-codemod": "./dist/bin/cli.js"
