@@ -114,19 +114,17 @@ export function runTransform({ files, flags, transformer }) {
 
   args = args.concat(["--transform", transformerPath]);
 
-  if (flags.jscodeshift) {
-    args = args.concat(flags.jscodeshift);
-  }
-
   args = args.concat(files);
 
   console.log(chalk.green`Executing command: jscodeshift ${args.join(" ")}`);
 
-  const result = execa.sync(jscodeshiftExecutable, args);
+  console.log(jscodeshiftExecutable);
 
-  if (result.failed) {
-    throw result.stderr;
-  }
+  // const result = execa.sync(jscodeshiftExecutable, args);
+
+  // if (result.failed) {
+  //   throw result.stderr;
+  // }
 }
 
 export async function run() {
@@ -166,15 +164,9 @@ export async function run() {
     return null;
   }
 
-  console.log({
+  return runTransform({
     files: filesExpanded,
     transformer: selectedTransformer,
     flags: cli.flags,
   });
-
-  // return runTransform({
-  //   files: filesExpanded,
-  //   transformer: selectedTransformer,
-  //   flags: cli.flags,
-  // });
 }
