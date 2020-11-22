@@ -15,6 +15,7 @@
     "meow": "7.0.1"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.11.2",
     "@types/inquirer": "^7.3.1",
     "@types/jest": "^26.0.15",
     "@types/jscodeshift": "^0.7.1",
