@@ -35,6 +35,7 @@
   "scripts": {
     "transform": "jscodeshift --parser=tsx -t bin/cli.js  src/* --print --dry",
     "check:types": "tsc --noEmit",
+    "test:run": "yarn build && node dist/bin/chakra-codemod.js",
     "clean": "rimraf dist",
     "prebuild": "yarn clean",
     "build": "yarn clean && tsc",

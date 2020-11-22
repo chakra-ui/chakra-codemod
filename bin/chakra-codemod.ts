@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { bootstrap } from "./cli";
+import { run } from "./cli";
 
-bootstrap()
+run()
   .then(() => {
     process.exit(0);
   })
