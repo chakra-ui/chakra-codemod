@@ -4,6 +4,9 @@
   "repository": "https://github.com/chakra-ui/chakra-codemod.git",
   "author": "Segun Adebayo <joseshegs@gmail.com>",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "chalk": "4.1.0",
     "execa": "4.0.3",
