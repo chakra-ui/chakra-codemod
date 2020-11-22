@@ -36,7 +36,7 @@ async function checkWorkDir(workingDir: string) {
   if (!isWorkingDirClean) {
     console.log(
       chalk.yellow`There are uncommitted changes in your working directory.
-Please commit or stash them before running the code mod.`,
+Please commit or stash them before running the codemod.`,
     );
 
     if (!process.env.CHAKRA_CODEMOD_FORCE_GIT) {
@@ -96,8 +96,3 @@ export async function bootstrap() {
   // TODO run it 💨
   console.log(answers);
 }
-
-bootstrap().catch((e) => {
-  console.error(e.message);
-  process.exit(1);
-});
