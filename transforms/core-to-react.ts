@@ -1,5 +1,5 @@
 import { Transform } from "jscodeshift";
-import { prepare } from "utils/shared";
+import { prepare } from "../utils/shared";
 
 /**
  * Convert imports from `@chakra-ui/core` to `@chakra-ui/react`

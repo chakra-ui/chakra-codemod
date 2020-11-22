@@ -1,22 +1,20 @@
-import fs from "fs";
 import chalk from "chalk";
-import path from "path";
-import isGitClean from "is-git-clean";
-import inquirer from "inquirer";
-import { promisify } from "util";
-import meow, { Result as MeowResult } from "meow";
 import execa from "execa";
+import fs from "fs";
+import globby from "globby";
+import inquirer from "inquirer";
+import isGitClean from "is-git-clean";
+import meow, { Result as MeowResult } from "meow";
+import path from "path";
+import { promisify } from "util";
 
 const readDirAsync = promisify(fs.readdir);
 const jscodeshiftExecutable = require.resolve(".bin/jscodeshift");
+const transformerDirectory = path.join(__dirname, "..", "transforms");
 
-function checkPathExist(path?: string) {
-  if (!path || !fs.existsSync(path)) {
-    console.log(
-      chalk.yellow`Invalid working dir: ${path}. Please pass a valid path`,
-    );
-    process.exit(1);
-  }
+function expandFilePathsIfNeeded(files: string[]) {
+  const shouldExpandFiles = files.some((file) => file.includes("*"));
+  return shouldExpandFiles ? globby.sync(files) : files;
 }
 
 export async function checkGitStatus(options: { dir: string; force: boolean }) {
@@ -55,8 +53,6 @@ export async function checkGitStatus(options: { dir: string; force: boolean }) {
     }
   }
 }
-
-const transformerDirectory = path.join(__dirname, "..", "transforms");
 
 async function getCodeModNames() {
   const files = await readDirAsync(transformerDirectory);
@@ -97,12 +93,8 @@ export function runTransform({ files, flags, transformer }) {
 
   const { dry, print } = flags;
 
-  if (dry) {
-    args.push("--dry");
-  }
-  if (print) {
-    args.push("--print");
-  }
+  if (dry) args.push("--dry");
+  if (print) args.push("--print");
 
   args.push("--verbose=2");
 
@@ -118,13 +110,12 @@ export function runTransform({ files, flags, transformer }) {
 
   console.log(chalk.green`Executing command: jscodeshift ${args.join(" ")}`);
 
-  console.log(jscodeshiftExecutable);
+  const result = execa.sync(jscodeshiftExecutable, args);
+  console.log({ result });
 
-  // const result = execa.sync(jscodeshiftExecutable, args);
-
-  // if (result.failed) {
-  //   throw result.stderr;
-  // }
+  if (result.failed) {
+    throw result.stderr;
+  }
 }
 
 export async function run() {
@@ -156,7 +147,9 @@ export async function run() {
 
   const { files, transformer } = await askQuestions(cli);
 
-  const filesExpanded = cli.input[1] || files;
+  const filesBeforeExpansion = cli.input[1] || files;
+  const filesExpanded = expandFilePathsIfNeeded([filesBeforeExpansion]);
+
   const selectedTransformer = cli.input[0] || transformer;
 
   if (!filesExpanded.length) {

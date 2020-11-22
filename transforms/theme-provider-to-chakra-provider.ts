@@ -1,7 +1,7 @@
 import { Transform } from "jscodeshift";
-import { findJSXElementsByModuleName, renameJSXElement } from "utils/jsx";
-import { addSubmoduleImport, removeModuleImport } from "utils/module";
-import { prepare } from "utils/shared";
+import { findJSXElementsByModuleName, renameJSXElement } from "../utils/jsx";
+import { addSubmoduleImport, removeModuleImport } from "../utils/module";
+import { prepare } from "../utils/shared";
 
 const transformer: Transform = (file, api) => {
   const config = prepare(file, api);

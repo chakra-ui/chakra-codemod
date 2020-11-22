@@ -10,9 +10,9 @@
  */
 
 import { JSCodeshift, Transform } from "jscodeshift";
-import { createJSXElement, findJSXElementsByModuleName } from "utils/jsx";
-import { insertOrCreateSubmoduleImport } from "utils/module";
-import { capitalize, prepare } from "utils/shared";
+import { createJSXElement, findJSXElementsByModuleName } from "../utils/jsx";
+import { insertOrCreateSubmoduleImport } from "../utils/module";
+import { capitalize, prepare } from "../utils/shared";
 
 const hasJSXAttribute = (j: JSCodeshift, prop: string) => {
   return j.filters.JSXElement.hasAttributes({ [prop]: () => true });

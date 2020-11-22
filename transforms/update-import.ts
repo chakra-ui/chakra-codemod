@@ -1,5 +1,5 @@
 import { Transform } from "jscodeshift";
-import { prepare } from "utils/shared";
+import { prepare } from "../utils/shared";
 
 const REPLACEMENTS = {
   PseudoBox: "Box",
@@ -7,6 +7,16 @@ const REPLACEMENTS = {
   AccordionHeader: "AccordionButton",
   AspectRatioBox: "AspectRatio",
 };
+
+/**
+ * @todo
+ * Check if the import already includes the identifier
+ * instead of adding duplicate imports.
+ *
+ * import {Box, PseudoBox} from "chakra"
+ *
+ * Output should only remove PseudoBox instead of adding another Box
+ */
 
 const updateImports: Transform = (file, api) => {
   const { j, root, done } = prepare(file, api);

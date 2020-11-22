@@ -1,5 +1,5 @@
 import { ASTPath, JSCodeshift, JSXElement, Transform } from "jscodeshift";
-import { prepare } from "utils/shared";
+import { prepare } from "../utils/shared";
 
 const isJSXElement = (
   j: JSCodeshift,
@@ -15,8 +15,7 @@ const transformer: Transform = (file, api) => {
   const { j, done, root } = config;
 
   root.findJSXElements("Slider").forEach((node) => {
-    //@ts-expect-error
-    node.value.extra.parenthesized = false;
+    (node.value as any).extra.parenthesized = false;
 
     let filledTrack: JSXElement;
 

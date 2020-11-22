@@ -1,6 +1,6 @@
 import { Transform } from "jscodeshift";
-import { findJSXElementsByModuleName } from "utils/jsx";
-import { prepare } from "utils/shared";
+import { findJSXElementsByModuleName } from "../utils/jsx";
+import { prepare } from "../utils/shared";
 
 /**
  * Converts the `color` prop applied to `Switch` or `Progress`

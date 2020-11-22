@@ -1,5 +1,5 @@
 import { BooleanLiteral, Transform } from "jscodeshift";
-import { prepare } from "utils/shared";
+import { prepare } from "../utils/shared";
 
 const transform: Transform = (file, api) => {
   const config = prepare(file, api);

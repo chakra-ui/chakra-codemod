@@ -1,10 +1,10 @@
 import { JSXAttribute, StringLiteral, Transform } from "jscodeshift";
-import { createJSXElement } from "utils/jsx";
+import { createJSXElement } from "../utils/jsx";
 import {
   insertOrCreateSubmoduleImport,
   removeModuleImport,
-} from "utils/module";
-import { capitalize, prepare } from "utils/shared";
+} from "../utils/module";
+import { capitalize, prepare } from "../utils/shared";
 
 const iconsPkgName = "@chakra-ui/icons";
 

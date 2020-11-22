@@ -1,5 +1,5 @@
 import { Transform } from "jscodeshift";
-import { prepare } from "utils/shared";
+import { prepare } from "../utils/shared";
 
 const transformer: Transform = (file, api) => {
   const { j, root } = prepare(file, api);
