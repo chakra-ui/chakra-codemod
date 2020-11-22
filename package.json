@@ -43,6 +43,6 @@
     "release": "changeset publish"
   },
   "bin": {
-    "chakra-codemod": "./dist/bin/cli.js"
+    "chakra-codemod": "./dist/bin/chakra-codemod.js"
   }
 }
