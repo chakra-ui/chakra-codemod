@@ -1,11 +1,22 @@
 import { Transform } from "jscodeshift";
 import { findJSXElementsByModuleName, renameJSXElement } from "../utils/jsx";
-import { addSubmoduleImport, removeModuleImport } from "../utils/module";
+import {
+  addSubmoduleImport,
+  hasSubmoduleImport,
+  removeModuleImport,
+} from "../utils/module";
 import { prepare } from "../utils/shared";
 
 const transformer: Transform = (file, api) => {
   const config = prepare(file, api);
   const { done, j, root } = config;
+
+  const hasThemeProviderImport = hasSubmoduleImport(j, root, {
+    moduleName: "@chakra-ui/core",
+    submoduleName: "ThemeProvider",
+  });
+
+  if (!hasThemeProviderImport) return;
 
   addSubmoduleImport(j, root, {
     moduleName: "@chakra-ui/core",

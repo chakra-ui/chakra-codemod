@@ -5,9 +5,9 @@ import {
   JSXIdentifier,
 } from "jscodeshift";
 import { TransformerConfig } from "./shared";
+import { componentsSelector } from "./v0-components";
 
-const baseSelector =
-  "Box|PseudoBox|Icon|Accordion|Alert|AlertDialog|AspectRatioBox|Avatar|Badge|Breadcrumb|Button|Checkbox|CircularProgress|CloseButton|Code|Collapse|ControlBox|Divider";
+const baseSelector = componentsSelector;
 
 interface FindJSXElementOptions {
   config: TransformerConfig;

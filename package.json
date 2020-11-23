@@ -8,6 +8,7 @@
     "access": "public"
   },
   "dependencies": {
+    "lodash.camelcase": "^4.3.0",
     "chalk": "4.1.0",
     "execa": "4.0.3",
     "globby": "11.0.1",
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.11.2",
+    "@types/lodash.camelcase": "^4.3.3",
     "@types/inquirer": "^7.3.1",
     "@types/jest": "^26.0.15",
     "@types/jscodeshift": "^0.7.1",
@@ -35,9 +37,10 @@
   "scripts": {
     "transform": "jscodeshift --parser=tsx -t bin/cli.js  src/* --print --dry",
     "check:types": "tsc --noEmit",
-    "test:run": "yarn build && node dist/bin/chakra-codemod.js",
+    "test:run": "yarn build && yarn local",
     "clean": "rimraf dist",
     "prebuild": "yarn clean",
+    "local": "rm -rf package-lock.json && npm link",
     "build": "yarn clean && tsc",
     "watch": "yarn build -- -w",
     "test": "jest",

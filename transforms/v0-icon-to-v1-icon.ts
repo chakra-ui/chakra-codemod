@@ -1,10 +1,12 @@
-import { JSXAttribute, StringLiteral, Transform } from "jscodeshift";
+import { JSXAttribute, Transform } from "jscodeshift";
+import camelCase from "lodash.camelcase";
 import { createJSXElement } from "../utils/jsx";
 import {
   insertOrCreateSubmoduleImport,
   removeModuleImport,
 } from "../utils/module";
 import { capitalize, prepare } from "../utils/shared";
+import { icons } from "../utils/v0-components";
 
 const iconsPkgName = "@chakra-ui/icons";
 
@@ -25,20 +27,38 @@ const transformer: Transform = (file, api) => {
     .replaceWith((node) => {
       const v0Props = node.value.openingElement.attributes as JSXAttribute[];
       const { value } = v0Props.find((prop) => prop.name.name === "name");
-      const v0IconName = (value as StringLiteral).value;
-
-      const v1Props = v0Props.filter((prop) => prop.name.name !== "name");
-      const v1IconName = `${capitalize(v0IconName)}Icon`;
 
       /**
-       * Create a JSX element of `${capitalize(name)}Icon`
+       * Check that the value is a string literal not a JSXExpression
+       */
+      const v0IconName =
+        value.type === "StringLiteral" ? value.value : undefined;
+
+      if (!v0IconName) return node;
+
+      let moduleName = iconsPkgName;
+
+      if (!icons.includes(v0IconName)) {
+        console.log(
+          `"${v0IconName}" seems to be a custom icon you added to the v0 theme object.`,
+          `Kindly extract it to a react component for better treeshaking following this guide`,
+          `https://chakra-ui.com/docs/components/icon#using-the-createicon-function`,
+        );
+        moduleName = "./REPLACE_WITH_ICON_DIRECTORY";
+      }
+
+      const v1Props = v0Props.filter((prop) => prop.name.name !== "name");
+      const v1IconName = `${capitalize(camelCase(v0IconName))}Icon`;
+
+      /**
+       * Create a JSX element of `${camelCase(name)}Icon`
        * forward any props passed to Icon to new component
        */
       const v1Icon = createJSXElement(j, v1IconName, v1Props);
 
       insertOrCreateSubmoduleImport(j, root, {
         importedName: v1IconName,
-        moduleName: iconsPkgName,
+        moduleName,
       });
 
       return v1Icon;

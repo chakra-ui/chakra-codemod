@@ -10,9 +10,10 @@
  */
 
 import { JSCodeshift, Transform } from "jscodeshift";
+import camelCase from "lodash.camelcase";
 import { createJSXElement, findJSXElementsByModuleName } from "../utils/jsx";
 import { insertOrCreateSubmoduleImport } from "../utils/module";
-import { capitalize, prepare } from "../utils/shared";
+import { prepare, capitalize } from "../utils/shared";
 
 const hasJSXAttribute = (j: JSCodeshift, prop: string) => {
   return j.filters.JSXElement.hasAttributes({ [prop]: () => true });
@@ -50,7 +51,7 @@ const transformer: Transform = (file, api) => {
       const attrName =
         j.JSXIdentifier.check(node.value.name) && node.value.name.name;
 
-      const v1IconName = `${capitalize(attrValue)}Icon`;
+      const v1IconName = `${capitalize(camelCase(attrValue))}Icon`;
       const newJSXAttribute = j.jsxAttribute(
         j.jsxIdentifier(attrName),
         j.jsxExpressionContainer(createJSXElement(j, v1IconName)),

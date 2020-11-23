@@ -12,57 +12,29 @@ npx @chakra-ui/codemod [path]
 
 The codemod will ask you a few questions:
 
-- Which code mods do you want to run? [select]
-- Do you want to perform a dry run? [Yn]
-- Print all modified files? [Yn]
+- Which files or directory should the codemods be applied? [text]
+- Which codemod(s) would like to apply? [select]
 
-If you are running this command in a git repository, please commit or stash your changes first
+### Flags
+
+- `--dry`: Pass if you want to perform a dry run?
+- `--print`: Pass if you want to print the modified files
+
+> If you are running this command in a git repository, please commit or stash your changes first
 
 ## Chakra V1 Codemods
 
-### Upgrade steps
+### Status
 
-- [ ] [1. Update your dependencies](https://chakra-ui.com/docs/migration#1-update-your-dependencies)
-- [ ] [2. Update the ThemeProvider](https://chakra-ui.com/docs/migration#2-update-the-themeprovider)
-- [ ] [3. Rename variantColor to colorScheme](https://chakra-ui.com/docs/migration#3-rename-variantcolor-to-colorscheme)
-- [ ] [4. Update layout size prop](https://chakra-ui.com/docs/migration#4-update-layout-size-prop)
-- [ ] [5. Replace PseudoBox elements](https://chakra-ui.com/docs/migration#5-replace-pseudobox-elements)
-- [ ] [6. Update theme breakpoints](https://chakra-ui.com/docs/migration#6-update-theme-breakpoints)
-- [ ] [7. ColorModeScript (optional)](https://chakra-ui.com/docs/migration#7-colormodescript-optional)
-
-### Components
-
-- [ ] [Accordion](https://chakra-ui.com/docs/migration#accordion)
-- [ ] [AspectRatioBox](https://chakra-ui.com/docs/migration#aspectratiobox)
-- [ ] [Breadcrumb](https://chakra-ui.com/docs/migration#breadcrumb)
-- [ ] [Button](https://chakra-ui.com/docs/migration#button)
-- [ ] [Checkbox](https://chakra-ui.com/docs/migration#checkbox)
-- [ ] [ColorMode](https://chakra-ui.com/docs/migration#colormode)
-- [ ] [Editable](https://chakra-ui.com/docs/migration#editable)
-- [ ] [Icons](https://chakra-ui.com/docs/migration#icons)
-- [ ] [Icon Button](https://chakra-ui.com/docs/migration#icon-button)
-- [ ] [Skeleton](https://chakra-ui.com/docs/migration#skeleton)
-- [ ] [Image](https://chakra-ui.com/docs/migration#image)
-- [ ] [Input](https://chakra-ui.com/docs/migration#input)
-- [ ] [Link](https://chakra-ui.com/docs/migration#link)
-- [ ] [Stack](https://chakra-ui.com/docs/migration#stack)
-- [ ] [Menu](https://chakra-ui.com/docs/migration#menu)
-- [ ] [Modal](https://chakra-ui.com/docs/migration#modal)
-- [ ] [Progress](https://chakra-ui.com/docs/migration#progress)
-- [ ] [CircularProgress](https://chakra-ui.com/docs/migration#circularprogress)
-- [ ] [Radio](https://chakra-ui.com/docs/migration#radio)
-- [ ] [RadioGroup](https://chakra-ui.com/docs/migration#radiogroup)
-- [ ] [Slider](https://chakra-ui.com/docs/migration#slider)
-- [ ] [Switch](https://chakra-ui.com/docs/migration#switch)
-- [ ] [Tabs](https://chakra-ui.com/docs/migration#tabs)
-- [ ] [Tags](https://chakra-ui.com/docs/migration#tags)
-- [ ] [Toast](https://chakra-ui.com/docs/migration#toast)
-- [ ] [Wrap (for `rc` versions)](https://chakra-ui.com/docs/migration#wrap-for-rc-versions)
-- [ ] [Transition Components](https://chakra-ui.com/docs/migration#transition-components)
-- [ ] [CSS Reset](https://chakra-ui.com/docs/migration#css-reset)
-- [ ] [Hooks](https://chakra-ui.com/docs/migration#hooks)
-
-Note: Some components can be grouped together eg. Progress and Switch share a common migration step, so we can group under "rename-color-to-colorscheme".
+- [x] Update `color` to `colorScheme`
+- [x] Update import from `@chakra-ui/core` to `@chakra-ui/react`
+- [ ] Rename `size` prop for `Box` or `PseudoBox` to `w` and `h`
+- [x] Update `Slider` JSX structure
+- [x] Rename `ThemeProvider` to `ChakraProvider`
+- [x] Update component Imports to reflect updates
+- [x] Update `useDisclosure` signature
+- [x] Change `v0` Icons to `v1` Icons
+- [x] Replace string icon prop to `Button` and `IconButton` to icon elements from `@chakra-ui/icons`
 
 ## Development
 
