@@ -163,5 +163,3 @@ export async function run() {
     flags: cli.flags,
   });
 }
-
-// packages/design-system/src/components
