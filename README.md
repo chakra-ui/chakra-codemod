@@ -64,6 +64,10 @@ chakra-codemod my-app
 # absolute path
 chakra-codemod /Users/you/development/my-app
 > Run chakra codemod in: /Users/you/development/my-app
+
+# absolute path with tranformer name
+chakra-codemod /Users/you/development/my-app core-to-react
+> Run chakra core-to-react codemod in: /Users/you/development/my-app
 ```
 
 ## References

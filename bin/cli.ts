@@ -147,10 +147,10 @@ export async function run() {
 
   const { files, transformer } = await askQuestions(cli);
 
-  const filesBeforeExpansion = cli.input[1] || files;
+  const filesBeforeExpansion = cli.input[0] || files;
   const filesExpanded = expandFilePathsIfNeeded([filesBeforeExpansion]);
 
-  const selectedTransformer = cli.input[0] || transformer;
+  const selectedTransformer = cli.input[1] || transformer;
 
   if (!filesExpanded.length) {
     console.log(`No files found matching ${filesExpanded.join(" ")}`);
