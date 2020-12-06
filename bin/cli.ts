@@ -30,13 +30,10 @@ const log = {
 };
 
 async function updateDependencies() {
-  // Get the project's root path to check `package-lock.json` or `yarn.lock`
   log.info`Detecting project root...`;
   const root = appRoot.toString();
 
-  // Check if the project uses yarn or npm
   log.info`Detecting package runner (npm or yarn)...`;
-
   const isYarn = hasYarn(root);
 
   const pkgJsonPath = await pkgUp();
@@ -48,10 +45,11 @@ async function updateDependencies() {
   pkgs.forEach((pkg) => {
     json.unset(`dependencies.${pkg}`);
   });
-  log.info`Removing old dependencies. ✅ Done`;
 
   const newPkgs = [
     "@chakra-ui/react",
+    "@chakra-ui/icons",
+    "@chakra-ui/theme-tools",
     "@emotion/react",
     "@emotion/styled",
     "framer-motion",
@@ -62,11 +60,9 @@ async function updateDependencies() {
     const { stdout: version } = execa.commandSync(`npm view ${pkg} version`);
     json.set(`dependencies.${pkg}`, version);
   });
-  log.info`Adding new dependencies. ✅ Done`;
 
   log.info`Installing...`;
   execa.commandSync(isYarn ? "yarn" : "npm i");
-  log.info`Installing ✅ Done`;
 }
 
 export async function checkGitStatus(options: { dir: string; force: boolean }) {
@@ -141,12 +137,12 @@ async function askQuestions(cli: MeowResult<{}>) {
 interface RunTransformOptions {
   files: string[];
   flags?: any;
-  codemods: any;
+  codemod: any;
 }
 
 export function runTransform(options: RunTransformOptions) {
-  const { files, flags = {}, codemods } = options;
-  const transformerPath = path.join(transformerDirectory, `${codemods}.js`);
+  const { files, flags = {}, codemod } = options;
+  const transformerPath = path.join(transformerDirectory, `${codemod}.js`);
 
   let args = [];
 
@@ -205,26 +201,25 @@ export async function run() {
 
   await updateDependencies();
 
-  const { files, codemods } = await askQuestions(cli);
+  const answer = await askQuestions(cli);
 
-  const filesBeforeExpansion = cli.input[1] || files;
-  const filesExpanded = expandFilePathsIfNeeded([filesBeforeExpansion]);
-  const selectedCodemods = cli.input[0] || codemods;
+  const filesBeforeExpansion = cli.input[1] || answer.files;
+  const files = expandFilePathsIfNeeded([filesBeforeExpansion]);
+  const codemods = cli.input[0] || answer.codemods;
 
-  if (!filesExpanded.length) {
-    log.error(`No files found matching ${filesExpanded.join(" ")}`);
+  if (!files.length) {
+    log.error`No files found matching ${files.join(" ")}`;
     return null;
   }
 
-  runTransform({
-    files: filesExpanded,
-    codemods: selectedCodemods,
-    flags: cli.flags,
-  });
-
   // It's important to run this last after all transformations are done
-  runTransform({
-    files: filesExpanded,
-    codemods: "core-to-react",
-  });
+  codemods.push("core-to-react");
+
+  for (const codemod of codemods) {
+    runTransform({
+      files,
+      codemod,
+      flags: cli.flags,
+    });
+  }
 }

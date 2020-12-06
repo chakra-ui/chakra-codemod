@@ -74,3 +74,13 @@ chakra-codemod /Users/you/development/my-app
 - https://www.toptal.com/javascript/write-code-to-rewrite-your-code
 - https://github.com/vutran/preact-codemod
 - https://github.com/vercel/next.js/tree/canary/packages/next-codemod
+
+## Todo
+
+Write transforms for:
+
+- `RadioGroup` and `CheckboxGroup` JSX update.
+- Skeleton update (https://chakra-ui.com/docs/migration#radiogroup)
+- Rename `ListProps` from `stylePos` to `stylePosition`
+- Update CircularProgress `thickness` calculation (https://chakra-ui.com/docs/migration#circularprogress)
+- Update Skeleton props (https://chakra-ui.com/docs/migration#skeleton)
