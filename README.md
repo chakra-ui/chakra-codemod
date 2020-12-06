@@ -6,6 +6,8 @@ Codemods are transformations that run on your codebase programmatically. This al
 
 ## Usage
 
+If you're using a monorepo, you'll need to `cd` into the specific package that has Chakra UI installed. Otherwise, you can run these at the root of your project.
+
 ```sh
 npx @chakra-ui/codemod [path]
 ```

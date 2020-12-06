@@ -1,12 +1,16 @@
+import appRoot from "app-root-path";
 import chalk from "chalk";
 import execa from "execa";
 import fs from "fs";
 import globby from "globby";
+import hasYarn from "has-yarn";
 import inquirer from "inquirer";
 import isGitClean from "is-git-clean";
 import meow, { Result as MeowResult } from "meow";
 import path from "path";
+import pkgUp from "pkg-up";
 import { promisify } from "util";
+import editJsonFile from "edit-json-file";
 
 const readDirAsync = promisify(fs.readdir);
 const jscodeshiftExecutable = require.resolve(".bin/jscodeshift");
@@ -15,6 +19,54 @@ const transformerDirectory = path.join(__dirname, "..", "transforms");
 function expandFilePathsIfNeeded(files: string[]) {
   const shouldExpandFiles = files.some((file) => file.includes("*"));
   return shouldExpandFiles ? globby.sync(files) : files;
+}
+
+const log = {
+  info: (...text) => console.log(chalk.blue("[chakra-codemod]:", ...text)),
+  warn: (...text) => console.log(chalk.yellow("[chakra-codemod]:", ...text)),
+  error: (...text) => console.log(chalk.red("[chakra-codemod]:", ...text)),
+  success: (...text) =>
+    console.log(chalk.bgGreen("[chakra-codemod]:", ...text)),
+};
+
+async function updateDependencies() {
+  // Get the project's root path to check `package-lock.json` or `yarn.lock`
+  log.info`Detecting project root...`;
+  const root = appRoot.toString();
+
+  // Check if the project uses yarn or npm
+  log.info`Detecting package runner (npm or yarn)...`;
+
+  const isYarn = hasYarn(root);
+
+  const pkgJsonPath = await pkgUp();
+  const json = editJsonFile(pkgJsonPath, { autosave: true });
+
+  const pkgs = ["@chakra-ui/core", "@emotion/core", "@emotion/styled"];
+
+  log.info`Removing old dependencies...`;
+  pkgs.forEach((pkg) => {
+    json.unset(`dependencies.${pkg}`);
+  });
+  log.info`Removing old dependencies. ✅ Done`;
+
+  const newPkgs = [
+    "@chakra-ui/react",
+    "@emotion/react",
+    "@emotion/styled",
+    "framer-motion",
+  ];
+
+  log.info`Adding new dependencies...`;
+  newPkgs.forEach((pkg) => {
+    const { stdout: version } = execa.commandSync(`npm view ${pkg} version`);
+    json.set(`dependencies.${pkg}`, version);
+  });
+  log.info`Adding new dependencies. ✅ Done`;
+
+  log.info`Installing...`;
+  execa.commandSync(isYarn ? "yarn" : "npm i");
+  log.info`Installing ✅ Done`;
 }
 
 export async function checkGitStatus(options: { dir: string; force: boolean }) {
@@ -36,19 +88,17 @@ export async function checkGitStatus(options: { dir: string; force: boolean }) {
 
   if (!clean) {
     if (force) {
-      console.log(`WARNING: ${errorMessage}. Forcibly continuing.`);
+      log.warn(`WARNING: ${errorMessage}. Forcibly continuing.`);
     } else if (isForceEnvSet) {
-      console.log(chalk.blue`CHAKRA_CODEMOD_FORCE_GIT is set - continuing...`);
+      log.info`CHAKRA_CODEMOD_FORCE_GIT is set - continuing...`;
     } else {
-      console.log("Thank you for using @chakra-ui/codemod!");
-      console.log(
-        chalk.yellow(
-          "\nBut before we continue, please stash or commit your git changes.",
-        ),
-      );
-      console.log(
-        "\nYou may use the --force flag to override this safety check.",
-      );
+      log.success("Thank you for using @chakra-ui/codemod!");
+      log.warn(
+        "\nBut before we continue, please stash or commit your git changes.",
+      ),
+        console.log(
+          "\nYou may use the --force flag to override this safety check.",
+        );
       process.exit(1);
     }
   }
@@ -62,8 +112,10 @@ async function getCodeModNames() {
 }
 
 async function askQuestions(cli: MeowResult<{}>) {
-  const codemods = await getCodeModNames();
-  const [selectedPath, selectedTransforms] = cli.input;
+  let codemods = await getCodeModNames();
+  codemods = codemods.filter((name) => name !== "core-to-react");
+
+  const [selectedPath, selectedCodemods] = cli.input;
 
   return await inquirer.prompt([
     {
@@ -75,19 +127,26 @@ async function askQuestions(cli: MeowResult<{}>) {
       filter: (files) => files.trim(),
     },
     {
-      type: "list",
-      name: "transformer",
+      type: "checkbox",
+      name: "codemods",
       message: "Which codemod(s) would like to apply?",
-      when: !selectedTransforms,
-      default: selectedTransforms,
+      when: !selectedCodemods,
+      default: selectedCodemods,
       pageSize: codemods.length,
       choices: codemods,
     },
   ]);
 }
 
-export function runTransform({ files, flags, transformer }) {
-  const transformerPath = path.join(transformerDirectory, `${transformer}.js`);
+interface RunTransformOptions {
+  files: string[];
+  flags?: any;
+  codemods: any;
+}
+
+export function runTransform(options: RunTransformOptions) {
+  const { files, flags = {}, codemods } = options;
+  const transformerPath = path.join(transformerDirectory, `${codemods}.js`);
 
   let args = [];
 
@@ -108,10 +167,9 @@ export function runTransform({ files, flags, transformer }) {
 
   args = args.concat(files);
 
-  console.log(chalk.green`Executing command: jscodeshift ${args.join(" ")}`);
+  log.info`Executing command: jscodeshift ${args.join(" ")}`;
 
   const result = execa.sync(jscodeshiftExecutable, args);
-  console.log({ result });
 
   if (result.failed) {
     throw result.stderr;
@@ -145,21 +203,28 @@ export async function run() {
     });
   }
 
-  const { files, transformer } = await askQuestions(cli);
+  await updateDependencies();
+
+  const { files, codemods } = await askQuestions(cli);
 
   const filesBeforeExpansion = cli.input[1] || files;
   const filesExpanded = expandFilePathsIfNeeded([filesBeforeExpansion]);
-
-  const selectedTransformer = cli.input[0] || transformer;
+  const selectedCodemods = cli.input[0] || codemods;
 
   if (!filesExpanded.length) {
-    console.log(`No files found matching ${filesExpanded.join(" ")}`);
+    log.error(`No files found matching ${filesExpanded.join(" ")}`);
     return null;
   }
 
-  return runTransform({
+  runTransform({
     files: filesExpanded,
-    transformer: selectedTransformer,
+    codemods: selectedCodemods,
     flags: cli.flags,
+  });
+
+  // It's important to run this last after all transformations are done
+  runTransform({
+    files: filesExpanded,
+    codemods: "core-to-react",
   });
 }

@@ -8,9 +8,14 @@
     "access": "public"
   },
   "dependencies": {
+    "has-yarn": "^2.1.0",
+    "edit-json-file": "^1.5.0",
     "lodash.camelcase": "^4.3.0",
+    "app-root-path": "^3.0.0",
+    "pkg-up": "^3.1.0",
     "chalk": "4.1.0",
     "execa": "4.0.3",
+    "jsonfile": "^6.1.0",
     "globby": "11.0.1",
     "inquirer": "7.3.3",
     "is-git-clean": "1.1.0",
@@ -18,6 +23,7 @@
     "meow": "7.0.1"
   },
   "devDependencies": {
+    "nodemon": "^2.0.6",
     "@changesets/cli": "^2.11.2",
     "@types/lodash.camelcase": "^4.3.3",
     "@types/inquirer": "^7.3.1",
@@ -38,6 +44,7 @@
     "transform": "jscodeshift --parser=tsx -t bin/cli.js  src/* --print --dry",
     "check:types": "tsc --noEmit",
     "test:run": "yarn build && yarn local",
+    "dev": "nodemon --watch bin/cli.ts --exec yarn test:run",
     "clean": "rimraf dist",
     "prebuild": "yarn clean",
     "local": "rm -rf package-lock.json && npm link",
