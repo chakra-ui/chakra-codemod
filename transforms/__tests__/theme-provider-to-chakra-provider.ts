@@ -8,7 +8,7 @@ import { defineTest } from "jscodeshift/dist/testUtils";
  * List of all test fixtures with an input and
  * output pair for each.
  */
-const fixtures = ["basic"] as const;
+const fixtures = ["basic", "renamed"] as const;
 const name = "theme-provider-to-chakra-provider";
 
 describe(name, () => {
