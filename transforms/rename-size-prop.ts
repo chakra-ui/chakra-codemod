@@ -8,12 +8,12 @@ function insertAtIndex(arr1, arr2, idx) {
 
 const transformer: Transform = (file, api) => {
   const config = prepare(file, api);
-  const { j, done, root } = config;
+  const { j, done } = config;
 
   const els = findJSXElementsByModuleName({
     config,
     moduleName: "@chakra-ui/core",
-    selector: "Box|PseudoBox",
+    selector: "Box|PseudoBox|Image|Icon",
   }).filter(
     j.filters.JSXElement.hasAttributes({ size: (value) => value != null }),
   );

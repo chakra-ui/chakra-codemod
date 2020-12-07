@@ -39,7 +39,12 @@ async function updateDependencies() {
   const pkgJsonPath = await pkgUp();
   const json = editJsonFile(pkgJsonPath, { autosave: true });
 
-  const pkgs = ["@chakra-ui/core", "@emotion/core", "@emotion/styled"];
+  const pkgs = [
+    "@chakra-ui/core",
+    "@emotion/core",
+    "@emotion/styled",
+    "emotion-theming",
+  ];
 
   log.info`Removing old dependencies...`;
   pkgs.forEach((pkg) => {

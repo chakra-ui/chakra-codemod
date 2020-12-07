@@ -88,3 +88,6 @@ Write transforms for:
 - Rename `ListProps` from `stylePos` to `stylePosition`
 - Update CircularProgress `thickness` calculation (https://chakra-ui.com/docs/migration#circularprogress)
 - Update Skeleton props (https://chakra-ui.com/docs/migration#skeleton)
+- Update Collapse Props from `isOpen` to `in`
+- Update Icon to work for this JSXExpression scenario:
+  `<Icon name={isOpen ? 'chevron-up' : 'chevron-down'} size="24px" />`
