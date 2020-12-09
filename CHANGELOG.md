@@ -1,5 +1,11 @@
 # @chakra-ui/codemod
 
+## 1.2.1
+
+### Patch Changes
+
+- [`69b0a9c`](https://github.com/chakra-ui/chakra-codemod/commit/69b0a9cc504cbb2b55f38553f56a363d9f7e0b44) [#17](https://github.com/chakra-ui/chakra-codemod/pull/17) Thanks [@jmiazga](https://github.com/jmiazga)! - Fixed order of command line args so path comes before transform
+
 ## 1.2.0
 
 ### Minor Changes
