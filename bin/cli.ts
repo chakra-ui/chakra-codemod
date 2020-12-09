@@ -203,9 +203,9 @@ export async function run() {
 
   const answer = await askQuestions(cli);
 
-  const filesBeforeExpansion = cli.input[1] || answer.files;
+  const filesBeforeExpansion = cli.input[0] || answer.files;
   const files = expandFilePathsIfNeeded([filesBeforeExpansion]);
-  const codemods = cli.input[0] || answer.codemods;
+  const codemods = cli.input[1] || answer.codemods;
 
   if (!files.length) {
     log.error`No files found matching ${files.join(" ")}`;
