@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import execa from "execa";
 import fs from "fs";
 import globby from "globby";
@@ -11,6 +10,7 @@ import pkgUp from "pkg-up";
 import pkgDir from "pkg-dir";
 import { promisify } from "util";
 import editJsonFile from "edit-json-file";
+import * as log from "../utils/log";
 
 const readDirAsync = promisify(fs.readdir);
 const jscodeshiftExecutable = require.resolve(".bin/jscodeshift");
@@ -20,14 +20,6 @@ function expandFilePathsIfNeeded(files: string[]) {
   const shouldExpandFiles = files.some((file) => file.includes("*"));
   return shouldExpandFiles ? globby.sync(files) : files;
 }
-
-const log = {
-  info: (...text) => console.log(chalk.blue("[chakra-codemod]:", ...text)),
-  warn: (...text) => console.log(chalk.yellow("[chakra-codemod]:", ...text)),
-  error: (...text) => console.log(chalk.red("[chakra-codemod]:", ...text)),
-  success: (...text) =>
-    console.log(chalk.bgGreen("[chakra-codemod]:", ...text)),
-};
 
 async function updateDependencies() {
   log.info(`Detecting project root...`);
