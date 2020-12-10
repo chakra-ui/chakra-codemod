@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.11.2",
+    "@types/edit-json-file": "^1.4.0",
     "@types/inquirer": "^7.3.1",
     "@types/jest": "^26.0.15",
     "@types/jscodeshift": "^0.7.1",
