@@ -30,10 +30,10 @@ const log = {
 };
 
 async function updateDependencies() {
-  log.info`Detecting project root...`;
+  log.info(`Detecting project root...`);
   const root = appRoot.toString();
 
-  log.info`Detecting package runner (npm or yarn)...`;
+  log.info(`Detecting package runner (npm or yarn)...`);
   const isYarn = hasYarn(root);
 
   const pkgJsonPath = await pkgUp();
@@ -46,7 +46,7 @@ async function updateDependencies() {
     "emotion-theming",
   ];
 
-  log.info`Removing old dependencies...`;
+  log.info(`Removing old dependencies...`);
   pkgs.forEach((pkg) => {
     json.unset(`dependencies.${pkg}`);
   });
@@ -60,13 +60,13 @@ async function updateDependencies() {
     "framer-motion",
   ];
 
-  log.info`Adding new dependencies...`;
+  log.info(`Adding new dependencies...`);
   newPkgs.forEach((pkg) => {
     const { stdout: version } = execa.commandSync(`npm view ${pkg} version`);
     json.set(`dependencies.${pkg}`, version);
   });
 
-  log.info`Installing...`;
+  log.info(`Installing...`);
   execa.commandSync(isYarn ? "yarn" : "npm i");
 }
 
@@ -91,15 +91,13 @@ export async function checkGitStatus(options: { dir: string; force: boolean }) {
     if (force) {
       log.warn(`WARNING: ${errorMessage}. Forcibly continuing.`);
     } else if (isForceEnvSet) {
-      log.info`CHAKRA_CODEMOD_FORCE_GIT is set - continuing...`;
+      log.info(`CHAKRA_CODEMOD_FORCE_GIT is set - continuing...`);
     } else {
       log.success("Thank you for using @chakra-ui/codemod!");
       log.warn(
         "\nBut before we continue, please stash or commit your git changes.",
-      ),
-        console.log(
-          "\nYou may use the --force flag to override this safety check.",
-        );
+      );
+      log.info("\nYou may use the --force flag to override this safety check.");
       process.exit(1);
     }
   }
@@ -168,7 +166,7 @@ export function runTransform(options: RunTransformOptions) {
 
   args = args.concat(files);
 
-  log.info`Executing command: jscodeshift ${args.join(" ")}`;
+  log.info(`Executing command: jscodeshift ${args.join(" ")}`);
 
   const result = execa.sync(jscodeshiftExecutable, args);
 
@@ -213,7 +211,7 @@ export async function run() {
   const codemods = cli.input[0] || answer.codemods;
 
   if (!files.length) {
-    log.error`No files found matching ${files.join(" ")}`;
+    log.error(`No files found matching ${files.join(" ")}`);
     return null;
   }
 
