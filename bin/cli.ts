@@ -1,4 +1,3 @@
-import appRoot from "app-root-path";
 import chalk from "chalk";
 import execa from "execa";
 import fs from "fs";
@@ -9,6 +8,7 @@ import isGitClean from "is-git-clean";
 import meow, { Result as MeowResult } from "meow";
 import path from "path";
 import pkgUp from "pkg-up";
+import pkgDir from "pkg-dir";
 import { promisify } from "util";
 import editJsonFile from "edit-json-file";
 
@@ -31,7 +31,7 @@ const log = {
 
 async function updateDependencies() {
   log.info(`Detecting project root...`);
-  const root = appRoot.toString();
+  const root = await pkgDir();
 
   log.info(`Detecting package runner (npm or yarn)...`);
   const isYarn = hasYarn(root);
