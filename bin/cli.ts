@@ -194,13 +194,14 @@ export async function run() {
     });
   }
 
-  await updateDependencies();
+  // await updateDependencies();
 
   const answer = await askQuestions(cli);
 
   const filesBeforeExpansion = cli.input[1] || answer.files;
   const files = expandFilePathsIfNeeded([filesBeforeExpansion]);
   const codemods = cli.input[0] || answer.codemods;
+  console.log(files, codemods);
 
   if (!files.length) {
     log.error(`No files found matching ${files.join(" ")}`);
@@ -208,13 +209,20 @@ export async function run() {
   }
 
   // It's important to run this last after all transformations are done
-  codemods.push("core-to-react");
 
-  for (const codemod of codemods) {
+  if (typeof codemods === "string") {
     runTransform({
       files,
-      codemod,
+      codemod: codemods,
       flags: cli.flags,
     });
+  } else {
+    for (const codemod of codemods) {
+      runTransform({
+        files,
+        codemod,
+        flags: cli.flags,
+      });
+    }
   }
 }
